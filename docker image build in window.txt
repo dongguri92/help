@@ -26,4 +26,3 @@ ex) pip = 19.3
 sh build-1.14.0-gpu-py3.sh
 
 3. docker image savedocker save help-khidi-tensorflow-1.14.0-gpu-py3 | gzip > help-khidi-tensorflow-1.14.0-gpu-py3.tar.gz
-     
