@@ -1,0 +1,29 @@
+window 10에서 도커 이미지 만들기
+
+(도커 툴박스가 설치되어있다는 가정하에서 설명하겠습니다.)
+
+1. git clone
+아산에서 제공해준 예시 파일을 clone해서 가져와야 함
+
+1) cd ~/
+--> (master)가 표시되었다면 clone시행
+2)git clone https://github.com/help-khidi/docker-templates
+
+2.docker image build
+src파일에 train.py, inference.py만 수정한 뒤 이미지 빌드
+이때 그냥 build하면 127오류가 나므로 unix파일로 바꾸어 주어야 함
+
+1) dos2unix명령어를 통해 build-1.14.0-gpu-py3.sh, run-1.14.0-gpu-py3.sh, inference.sh, train.sh를 모두 unix로 변환
+ex) dos2unix build-1.14.0-gpu-py3.sh
+
+2) requirements.txt를 수정하여 필요한 라이브러리 가져오기
+ex) pip = 19.3
+     pandas
+     simpleITK
+* 이때, pip install ~~ 이런식이 아니라 필요한 라이브러리명만 입력
+
+3) build
+sh build-1.14.0-gpu-py3.sh
+
+3. docker image savedocker save help-khidi-tensorflow-1.14.0-gpu-py3 | gzip > help-khidi-tensorflow-1.14.0-gpu-py3.tar.gz
+     
