@@ -95,9 +95,9 @@ def train():
     print("train_onehot shape : ", train_onehot.shape)
 
     #input shape
-    (img_rows, img_cols, input_dims) = train_x[0].shape
+    (img_rows, img_cols, input_dims) = train_ct[0].shape
     input_shape = (img_rows, img_cols, input_dims)
-    print(input_shape)
+    print("input_shape : ", input_shape)
 
     #hyperparameter
     num_classes = len(train_onehot[0])
@@ -150,7 +150,7 @@ def train():
     #block6
     x = layers.Conv2D(num_ch*4, (3,3), padding = 'same', name = "block6_Conv2D_1")(input_layer)
     shortcut = layers.MaxPooling2D((2,2), name = "block6_maxpooling")(x)
-    x = layers.Conv2D(num_ch*4, (3,3), padding = 'same', name = "block4_Conv2D_2")(shortcut)
+    x = layers.Conv2D(num_ch*4, (3,3), padding = 'same', name = "block6_Conv2D_2")(shortcut)
     x = layers.add([x, shortcut])
     x = layers.BatchNormalization()(x)
     input_layer = layers.Activation('relu')(x)
