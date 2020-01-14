@@ -13,9 +13,6 @@ from tensorflow.keras import layers
 from tensorflow.keras import optimizers
 from tensorflow.keras import models
 
-#os, time 내장
-#tf도 내장인대 1.버전
-
 #ID = os.environ['ID']
 
 TRAIN_DIR_IMG = '/data/train/img/'
@@ -39,15 +36,15 @@ def train():
     itk_img_0 = sitk.ReadImage(train_ct_path[0])
     train_ct = sitk.GetArrayFromImage(itk_img_0)
 
+    '''
     for j in range(1, len(train_ct_path)):
         itk_img = sitk.ReadImage(train_ct_path[j])
         ct_scan = sitk.GetArrayFromImage(itk_img)
-        #print(img_list[j], "img shape : ", ct_scan.shape)
         train_ct = np.concatenate((train_ct, ct_scan))
+    '''
 
     print("train_ct shape : ", train_ct.shape)
-    #concatenate로 모두 합치기
-    #(168,512,512), (180,512,512) 이렇게 말고 (500, 512,512) 이렇게
+
 
     #expand_dims
     train_ct = np.expand_dims(train_ct, 3)
@@ -66,18 +63,23 @@ def train():
     itk_mask_0 = sitk.ReadImage(train_mask_path[0])
     train_mask = sitk.GetArrayFromImage(itk_mask_0)
 
+    '''
     for l in range(1, len(train_mask_path)):
         itk_img = sitk.ReadImage(train_mask_path[l])
         mask_scan = sitk.GetArrayFromImage(itk_img)
-        #print(mask_list[l], 'mask shape : ', mask_scan.shape)
         train_mask = np.concatenate((train_mask, mask_scan))
+    '''
 
     print("train_mask shape : ", train_mask.shape)
+
+    #expand_dims
+    train_mask = np.expand_dims(train_mask, 3)
+    print("train_mask_ex shape : ", train_mask.shape)
 
     #mask to multi-label
     train_onehot = []
     for m in range(len(train_mask)):
-        train_y_onehot_pre = np.zeros(len(np.unique(train_mask)))
+        train_y_onehot_pre = np.array([0,0,0,0])
         if 0 in train_mask[m]:
             train_y_onehot_pre[0] = 1
         if 1 in train_mask[m]:
@@ -106,7 +108,6 @@ def train():
     epochs = 300
 
     #model fit
-    #class없이 그냥 직접짜기
 
     #input
     img_input = layers.Input(shape = input_shape)
