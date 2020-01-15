@@ -32,16 +32,16 @@ def train():
         path = TRAIN_DIR_IMG + img_list[i]
         train_ct_path.append(path)
 
+    train_ct_path = train_ct_path[50 : 100]
+
     #img load
     itk_img_0 = sitk.ReadImage(train_ct_path[0])
     train_ct = sitk.GetArrayFromImage(itk_img_0)
 
-    '''
     for j in range(1, len(train_ct_path)):
         itk_img = sitk.ReadImage(train_ct_path[j])
         ct_scan = sitk.GetArrayFromImage(itk_img)
         train_ct = np.concatenate((train_ct, ct_scan))
-    '''
 
     print("train_ct shape : ", train_ct.shape)
 
@@ -59,16 +59,16 @@ def train():
         path = TRAIN_DIR_MASK + mask_list[k]
         train_mask_path.append(path)
 
+    train_mask_path = train_mask_path[50 : 100]
+
     #mask load
     itk_mask_0 = sitk.ReadImage(train_mask_path[0])
     train_mask = sitk.GetArrayFromImage(itk_mask_0)
 
-    '''
     for l in range(1, len(train_mask_path)):
         itk_img = sitk.ReadImage(train_mask_path[l])
         mask_scan = sitk.GetArrayFromImage(itk_img)
         train_mask = np.concatenate((train_mask, mask_scan))
-    '''
 
     print("train_mask shape : ", train_mask.shape)
 
@@ -104,11 +104,11 @@ def train():
     num_ch = 64
 
     lr = 0.0001
-    batch_size = 8
-    epochs = 300
+    batch_size = 32
+    epochs = 40
 
     #model fit
-
+    '''
     #input
     img_input = layers.Input(shape = input_shape)
 
@@ -169,6 +169,10 @@ def train():
 
     #model
     model = models.Model(img_input, x)
+    '''
+
+    model = models.load_model('/data/volume/logs/model_20200115.h5')
+    model.summary()
 
     #optimizer
     adam = optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
@@ -177,8 +181,11 @@ def train():
     model.compile(loss = 'binary_crossentropy', optimizer = adam, metrics = ['accuracy'])
 
     #learning
-    history = model.fit(train_ct, train_onehot, validation_split = 0.2, epochs = epochs, batch_size = batch_size)
+    history = model.fit(train_ct, train_onehot, epochs = epochs, batch_size = batch_size)
 
+    #model save해야할듯
+    model.save('/data/volume/logs/model_20200115_1.h5')
 
 if __name__ == "__main__":
-  train()
+    train()
+    #pass하면 그냥 넘어가긴 하네
